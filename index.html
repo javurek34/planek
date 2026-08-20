@@ -22,10 +22,24 @@
       background: #263747;
       color: white;
       padding: 18px 24px;
+
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 20px;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .school-logo {
+      width: 280px;
+      max-width: 35vw;
+      height: auto;
+      display: block;
     }
 
     header h1 {
@@ -121,6 +135,7 @@
       align-items: center;
       justify-content: space-between;
       margin-bottom: 12px;
+      gap: 20px;
     }
 
     .plan-header h2 {
@@ -133,6 +148,7 @@
       height: 650px;
 
       border: 2px solid #b0bec5;
+
       background:
         linear-gradient(#eceff1 1px, transparent 1px),
         linear-gradient(90deg, #eceff1 1px, transparent 1px);
@@ -145,8 +161,8 @@
     .room {
       position: absolute;
 
-      min-width: 110px;
-      min-height: 80px;
+      min-width: 80px;
+      min-height: 60px;
 
       border: 2px solid #455a64;
       border-radius: 5px;
@@ -301,7 +317,40 @@
       display: none;
     }
 
+    .print-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15mm;
+    }
+
+    .print-logo {
+      width: 60mm;
+      height: auto;
+      display: block;
+    }
+
+    .print-subtitle {
+      font-size: 11pt;
+      margin-top: 2mm;
+    }
+
     @media (max-width: 900px) {
+      header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .header-brand {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .school-logo {
+        width: 280px;
+        max-width: 100%;
+      }
+
       .main {
         grid-template-columns: 1fr;
       }
@@ -310,10 +359,6 @@
         height: 500px;
       }
     }
-
-    /* =============================
-       TISK / PDF A4 NA ŠÍŘKU
-       ============================= */
 
     @page {
       size: A4 landscape;
@@ -350,23 +395,40 @@
 
       .print-title {
         display: block;
-        text-align: center;
-        margin-bottom: 6mm;
+        margin-bottom: 5mm;
+      }
+
+      .print-brand {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12mm;
+      }
+
+      .print-logo {
+        width: 60mm;
+        height: auto;
       }
 
       .print-title h1 {
-        font-size: 20pt;
+        font-size: 19pt;
         margin: 0;
       }
 
       .print-title h2 {
+        text-align: center;
         font-size: 14pt;
-        margin: 2mm 0 0;
+        margin: 4mm 0 0;
+      }
+
+      .print-subtitle {
+        font-size: 11pt;
+        margin-top: 2mm;
       }
 
       .plan-area {
         width: 277mm;
-        height: 170mm;
+        height: 155mm;
 
         border: 1px solid #333;
 
@@ -375,30 +437,42 @@
         background: white;
       }
 
-      .room {
+      .room,
+      .print-logo {
         print-color-adjust: exact;
         -webkit-print-color-adjust: exact;
       }
 
       .legend {
-        margin-top: 5mm;
+        margin-top: 4mm;
       }
     }
-
   </style>
 </head>
 
 <body>
 
 <header>
-  <div>
-    <h1>Orientační plán školy</h1>
-    <div class="school-name">Název školy</div>
+
+  <div class="header-brand">
+
+    <img
+      src="logo-skola-23-transparent.png"
+      alt="Logo ZŠ Kaplického"
+      class="school-logo"
+    >
+
+    <div>
+      <h1>Orientační plán školy</h1>
+      <div class="school-name">ZŠ Kaplického</div>
+    </div>
+
   </div>
 
   <button class="btn-success" onclick="printPDF()">
     Export / tisk PDF
   </button>
+
 </header>
 
 
@@ -440,14 +514,35 @@
   <div class="plan-card">
 
     <div class="print-title">
-      <h1>Orientační plán školy</h1>
+
+      <div class="print-brand">
+
+        <img
+          src="logo-skola-23-transparent.png"
+          alt="Logo ZŠ Kaplického"
+          class="print-logo"
+        >
+
+        <div>
+          <h1>ZŠ Kaplického</h1>
+
+          <div class="print-subtitle">
+            Orientační plán školy
+          </div>
+        </div>
+
+      </div>
+
       <h2 id="printFloorTitle">1. patro</h2>
+
     </div>
+
 
     <div class="plan-header">
       <h2 id="floorTitle">1. patro</h2>
       <span>Klikni na místnost pro úpravu</span>
     </div>
+
 
     <div id="planArea" class="plan-area"></div>
 
@@ -496,6 +591,7 @@
 
 
     <div class="form-group">
+
       <label>Typ místnosti</label>
 
       <select id="roomType">
@@ -522,6 +618,7 @@
 
     <div class="form-group">
       <label>Poznámka</label>
+
       <textarea
         id="roomNote"
         placeholder="Další informace..."
@@ -579,8 +676,9 @@
 
 
     <div class="hint">
-      Pozice místnosti se zatím nastavuje pomocí souřadnic X a Y.
-      V další verzi můžeme místnosti přesouvat myší přímo v plánku.
+      Místnosti se zatím umisťují pomocí souřadnic X a Y.
+      Později můžeme přidat přesouvání myší, změnu velikosti tažením,
+      chodby, schody, dveře a další prvky.
     </div>
 
   </div>
@@ -593,13 +691,6 @@
   let currentFloor = 1;
   let selectedRoomId = null;
 
-
-  /*
-   * DATA
-   *
-   * Pokud už byla aplikace použita,
-   * načtou se data z localStorage.
-   */
 
   let rooms = JSON.parse(
     localStorage.getItem("schoolRooms")
@@ -984,15 +1075,6 @@
 
 
   function printPDF() {
-
-    /*
-     * Prohlížeč otevře tiskový dialog.
-     *
-     * Vyber:
-     * Cíl -> Uložit jako PDF
-     * Formát -> A4
-     * Orientace -> Na šířku
-     */
 
     window.print();
 
