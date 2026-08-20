@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Orientační plán školy</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f3f5f7;
+      color: #222;
+    }
+
+    header {
+      background: #263747;
+      color: white;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    header .school-name {
+      opacity: 0.8;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 6px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .btn-primary {
+      background: #2979ff;
+      color: white;
+    }
+
+    .btn-success {
+      background: #2e7d32;
+      color: white;
+    }
+
+    .btn-danger {
+      background: #c62828;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #e0e0e0;
+      color: #222;
+    }
+
+    .toolbar {
+      background: white;
+      border-bottom: 1px solid #ddd;
+      padding: 12px 20px;
+
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      align-items: center;
+    }
+
+    .floor-btn {
+      background: #eceff1;
+      color: #333;
+    }
+
+    .floor-btn.active {
+      background: #263747;
+      color: white;
+    }
+
+    .toolbar-spacer {
+      flex: 1;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 18px;
+      padding: 18px;
+      min-height: calc(100vh - 130px);
+    }
+
+    .plan-card,
+    .sidebar {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .plan-card {
+      padding: 18px;
+    }
+
+    .plan-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .plan-header h2 {
+      margin: 0;
+    }
+
+    .plan-area {
+      position: relative;
+      width: 100%;
+      height: 650px;
+
+      border: 2px solid #b0bec5;
+      background:
+        linear-gradient(#eceff1 1px, transparent 1px),
+        linear-gradient(90deg, #eceff1 1px, transparent 1px);
+
+      background-size: 25px 25px;
+
+      overflow: hidden;
+    }
+
+    .room {
+      position: absolute;
+
+      min-width: 110px;
+      min-height: 80px;
+
+      border: 2px solid #455a64;
+      border-radius: 5px;
+
+      background: #e3f2fd;
+
+      padding: 8px;
+
+      cursor: pointer;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      text-align: center;
+
+      user-select: none;
+    }
+
+    .room:hover {
+      outline: 3px solid rgba(41,121,255,0.3);
+    }
+
+    .room.selected {
+      outline: 4px solid #2979ff;
+    }
+
+    .room-number {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .room-name {
+      font-size: 13px;
+      margin-top: 3px;
+    }
+
+    .room-class {
+      margin-top: 6px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .room-teacher {
+      font-size: 11px;
+      margin-top: 2px;
+      color: #555;
+    }
+
+    .type-classroom {
+      background: #e3f2fd;
+    }
+
+    .type-office {
+      background: #fff3e0;
+    }
+
+    .type-special {
+      background: #e8f5e9;
+    }
+
+    .type-other {
+      background: #f3e5f5;
+    }
+
+    .sidebar {
+      padding: 18px;
+    }
+
+    .sidebar h3 {
+      margin-top: 0;
+    }
+
+    .form-group {
+      margin-bottom: 13px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 9px;
+
+      border: 1px solid #bbb;
+      border-radius: 5px;
+
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .buttons button {
+      flex: 1;
+    }
+
+    .hint {
+      margin-top: 14px;
+
+      padding: 10px;
+
+      background: #f5f5f5;
+      border-radius: 6px;
+
+      font-size: 12px;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    .legend {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      font-size: 12px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .legend-color {
+      width: 18px;
+      height: 18px;
+      border: 1px solid #777;
+    }
+
+    .print-title {
+      display: none;
+    }
+
+    @media (max-width: 900px) {
+      .main {
+        grid-template-columns: 1fr;
+      }
+
+      .plan-area {
+        height: 500px;
+      }
+    }
+
+    /* =============================
+       TISK / PDF A4 NA ŠÍŘKU
+       ============================= */
+
+    @page {
+      size: A4 landscape;
+      margin: 10mm;
+    }
+
+    @media print {
+
+      body {
+        background: white;
+      }
+
+      header,
+      .toolbar,
+      .sidebar {
+        display: none !important;
+      }
+
+      .main {
+        display: block;
+        padding: 0;
+        min-height: auto;
+      }
+
+      .plan-card {
+        box-shadow: none;
+        border-radius: 0;
+        padding: 0;
+      }
+
+      .plan-header {
+        display: none;
+      }
+
+      .print-title {
+        display: block;
+        text-align: center;
+        margin-bottom: 6mm;
+      }
+
+      .print-title h1 {
+        font-size: 20pt;
+        margin: 0;
+      }
+
+      .print-title h2 {
+        font-size: 14pt;
+        margin: 2mm 0 0;
+      }
+
+      .plan-area {
+        width: 277mm;
+        height: 170mm;
+
+        border: 1px solid #333;
+
+        page-break-inside: avoid;
+
+        background: white;
+      }
+
+      .room {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .legend {
+        margin-top: 5mm;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div>
+    <h1>Orientační plán školy</h1>
+    <div class="school-name">Název školy</div>
+  </div>
+
+  <button class="btn-success" onclick="printPDF()">
+    Export / tisk PDF
+  </button>
+</header>
+
+
+<div class="toolbar">
+
+  <strong>Patro:</strong>
+
+  <button class="floor-btn active" data-floor="1" onclick="changeFloor(1)">
+    1. patro
+  </button>
+
+  <button class="floor-btn" data-floor="2" onclick="changeFloor(2)">
+    2. patro
+  </button>
+
+  <button class="floor-btn" data-floor="3" onclick="changeFloor(3)">
+    3. patro
+  </button>
+
+  <button class="floor-btn" data-floor="4" onclick="changeFloor(4)">
+    4. patro
+  </button>
+
+  <button class="floor-btn" data-floor="5" onclick="changeFloor(5)">
+    5. patro
+  </button>
+
+  <div class="toolbar-spacer"></div>
+
+  <button class="btn-primary" onclick="newRoom()">
+    + Nová místnost
+  </button>
+
+</div>
+
+
+<div class="main">
+
+  <div class="plan-card">
+
+    <div class="print-title">
+      <h1>Orientační plán školy</h1>
+      <h2 id="printFloorTitle">1. patro</h2>
+    </div>
+
+    <div class="plan-header">
+      <h2 id="floorTitle">1. patro</h2>
+      <span>Klikni na místnost pro úpravu</span>
+    </div>
+
+    <div id="planArea" class="plan-area"></div>
+
+
+    <div class="legend">
+
+      <div class="legend-item">
+        <span class="legend-color type-classroom"></span>
+        Učebna
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-color type-office"></span>
+        Kabinet
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-color type-special"></span>
+        Odborná učebna
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-color type-other"></span>
+        Ostatní
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="sidebar">
+
+    <h3>Údaje místnosti</h3>
+
+    <div class="form-group">
+      <label>Číslo místnosti</label>
+      <input id="roomNumber" placeholder="např. 203">
+    </div>
+
+
+    <div class="form-group">
+      <label>Název místnosti</label>
+      <input id="roomName" placeholder="např. Učebna matematiky">
+    </div>
+
+
+    <div class="form-group">
+      <label>Typ místnosti</label>
+
+      <select id="roomType">
+        <option value="classroom">Učebna</option>
+        <option value="special">Odborná učebna</option>
+        <option value="office">Kabinet</option>
+        <option value="other">Ostatní</option>
+      </select>
+
+    </div>
+
+
+    <div class="form-group">
+      <label>Třída</label>
+      <input id="roomClass" placeholder="např. 7.A">
+    </div>
+
+
+    <div class="form-group">
+      <label>Třídní učitel</label>
+      <input id="roomTeacher" placeholder="např. Jan Novák">
+    </div>
+
+
+    <div class="form-group">
+      <label>Poznámka</label>
+      <textarea
+        id="roomNote"
+        placeholder="Další informace..."
+      ></textarea>
+    </div>
+
+
+    <div class="row">
+
+      <div class="form-group">
+        <label>X</label>
+        <input id="roomX" type="number" value="50">
+      </div>
+
+      <div class="form-group">
+        <label>Y</label>
+        <input id="roomY" type="number" value="50">
+      </div>
+
+    </div>
+
+
+    <div class="row">
+
+      <div class="form-group">
+        <label>Šířka</label>
+        <input id="roomWidth" type="number" value="140">
+      </div>
+
+      <div class="form-group">
+        <label>Výška</label>
+        <input id="roomHeight" type="number" value="90">
+      </div>
+
+    </div>
+
+
+    <div class="buttons">
+
+      <button
+        class="btn-primary"
+        onclick="saveRoom()"
+      >
+        Uložit
+      </button>
+
+      <button
+        class="btn-danger"
+        onclick="deleteRoom()"
+      >
+        Smazat
+      </button>
+
+    </div>
+
+
+    <div class="hint">
+      Pozice místnosti se zatím nastavuje pomocí souřadnic X a Y.
+      V další verzi můžeme místnosti přesouvat myší přímo v plánku.
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+  let currentFloor = 1;
+  let selectedRoomId = null;
+
+
+  /*
+   * DATA
+   *
+   * Pokud už byla aplikace použita,
+   * načtou se data z localStorage.
+   */
+
+  let rooms = JSON.parse(
+    localStorage.getItem("schoolRooms")
+  ) || [
+
+    {
+      id: 1,
+      floor: 1,
+      number: "101",
+      name: "Učebna",
+      type: "classroom",
+      className: "6.A",
+      teacher: "Jana Nováková",
+      note: "",
+      x: 50,
+      y: 60,
+      width: 150,
+      height: 100
+    },
+
+    {
+      id: 2,
+      floor: 1,
+      number: "102",
+      name: "Učebna matematiky",
+      type: "special",
+      className: "",
+      teacher: "",
+      note: "",
+      x: 220,
+      y: 60,
+      width: 170,
+      height: 100
+    },
+
+    {
+      id: 3,
+      floor: 1,
+      number: "103",
+      name: "Kabinet",
+      type: "office",
+      className: "",
+      teacher: "",
+      note: "",
+      x: 410,
+      y: 60,
+      width: 130,
+      height: 100
+    }
+
+  ];
+
+
+  function saveData() {
+
+    localStorage.setItem(
+      "schoolRooms",
+      JSON.stringify(rooms)
+    );
+
+  }
+
+
+  function changeFloor(floor) {
+
+    currentFloor = floor;
+    selectedRoomId = null;
+
+    document.getElementById("floorTitle").textContent =
+      floor + ". patro";
+
+    document.getElementById("printFloorTitle").textContent =
+      floor + ". patro";
+
+
+    document
+      .querySelectorAll(".floor-btn")
+      .forEach(button => {
+
+        button.classList.toggle(
+          "active",
+          Number(button.dataset.floor) === floor
+        );
+
+      });
+
+
+    clearForm();
+    renderRooms();
+
+  }
+
+
+  function renderRooms() {
+
+    const area =
+      document.getElementById("planArea");
+
+    area.innerHTML = "";
+
+
+    rooms
+      .filter(room => room.floor === currentFloor)
+      .forEach(room => {
+
+        const div =
+          document.createElement("div");
+
+
+        div.className =
+          "room type-" + room.type;
+
+
+        if (room.id === selectedRoomId) {
+          div.classList.add("selected");
+        }
+
+
+        div.style.left =
+          room.x + "px";
+
+        div.style.top =
+          room.y + "px";
+
+        div.style.width =
+          room.width + "px";
+
+        div.style.height =
+          room.height + "px";
+
+
+        div.innerHTML = `
+          <div class="room-number">
+            ${escapeHTML(room.number)}
+          </div>
+
+          <div class="room-name">
+            ${escapeHTML(room.name)}
+          </div>
+
+          ${
+            room.className
+            ?
+            `<div class="room-class">
+              ${escapeHTML(room.className)}
+            </div>`
+            :
+            ""
+          }
+
+          ${
+            room.teacher
+            ?
+            `<div class="room-teacher">
+              ${escapeHTML(room.teacher)}
+            </div>`
+            :
+            ""
+          }
+        `;
+
+
+        div.onclick = function() {
+          selectRoom(room.id);
+        };
+
+
+        area.appendChild(div);
+
+      });
+
+  }
+
+
+  function selectRoom(id) {
+
+    const room =
+      rooms.find(r => r.id === id);
+
+    if (!room) {
+      return;
+    }
+
+
+    selectedRoomId = id;
+
+
+    document.getElementById("roomNumber").value =
+      room.number;
+
+    document.getElementById("roomName").value =
+      room.name;
+
+    document.getElementById("roomType").value =
+      room.type;
+
+    document.getElementById("roomClass").value =
+      room.className;
+
+    document.getElementById("roomTeacher").value =
+      room.teacher;
+
+    document.getElementById("roomNote").value =
+      room.note || "";
+
+    document.getElementById("roomX").value =
+      room.x;
+
+    document.getElementById("roomY").value =
+      room.y;
+
+    document.getElementById("roomWidth").value =
+      room.width;
+
+    document.getElementById("roomHeight").value =
+      room.height;
+
+
+    renderRooms();
+
+  }
+
+
+  function newRoom() {
+
+    selectedRoomId = null;
+
+    clearForm();
+
+    document.getElementById("roomNumber").focus();
+
+    renderRooms();
+
+  }
+
+
+  function saveRoom() {
+
+    const number =
+      document.getElementById("roomNumber").value.trim();
+
+    const name =
+      document.getElementById("roomName").value.trim();
+
+    const type =
+      document.getElementById("roomType").value;
+
+    const className =
+      document.getElementById("roomClass").value.trim();
+
+    const teacher =
+      document.getElementById("roomTeacher").value.trim();
+
+    const note =
+      document.getElementById("roomNote").value.trim();
+
+
+    const x =
+      Number(document.getElementById("roomX").value);
+
+    const y =
+      Number(document.getElementById("roomY").value);
+
+    const width =
+      Number(document.getElementById("roomWidth").value);
+
+    const height =
+      Number(document.getElementById("roomHeight").value);
+
+
+    if (!number) {
+
+      alert("Zadej číslo nebo označení místnosti.");
+
+      return;
+
+    }
+
+
+    if (selectedRoomId !== null) {
+
+      const room =
+        rooms.find(r => r.id === selectedRoomId);
+
+
+      room.number = number;
+      room.name = name;
+      room.type = type;
+      room.className = className;
+      room.teacher = teacher;
+      room.note = note;
+
+      room.x = x;
+      room.y = y;
+      room.width = width;
+      room.height = height;
+
+    }
+
+    else {
+
+      const newRoom = {
+
+        id: Date.now(),
+
+        floor: currentFloor,
+
+        number,
+        name,
+        type,
+        className,
+        teacher,
+        note,
+
+        x,
+        y,
+        width,
+        height
+
+      };
+
+
+      rooms.push(newRoom);
+
+      selectedRoomId = newRoom.id;
+
+    }
+
+
+    saveData();
+    renderRooms();
+
+  }
+
+
+  function deleteRoom() {
+
+    if (selectedRoomId === null) {
+
+      alert("Nejprve vyber místnost.");
+
+      return;
+
+    }
+
+
+    if (!confirm("Opravdu chceš místnost smazat?")) {
+      return;
+    }
+
+
+    rooms =
+      rooms.filter(
+        room => room.id !== selectedRoomId
+      );
+
+
+    selectedRoomId = null;
+
+    saveData();
+    clearForm();
+    renderRooms();
+
+  }
+
+
+  function clearForm() {
+
+    document.getElementById("roomNumber").value = "";
+    document.getElementById("roomName").value = "";
+    document.getElementById("roomType").value = "classroom";
+    document.getElementById("roomClass").value = "";
+    document.getElementById("roomTeacher").value = "";
+    document.getElementById("roomNote").value = "";
+
+    document.getElementById("roomX").value = 50;
+    document.getElementById("roomY").value = 50;
+    document.getElementById("roomWidth").value = 140;
+    document.getElementById("roomHeight").value = 90;
+
+  }
+
+
+  function printPDF() {
+
+    /*
+     * Prohlížeč otevře tiskový dialog.
+     *
+     * Vyber:
+     * Cíl -> Uložit jako PDF
+     * Formát -> A4
+     * Orientace -> Na šířku
+     */
+
+    window.print();
+
+  }
+
+
+  function escapeHTML(text) {
+
+    const div =
+      document.createElement("div");
+
+    div.textContent =
+      text || "";
+
+    return div.innerHTML;
+
+  }
+
+
+  renderRooms();
+
+</script>
+
+</body>
+</html>
