@@ -9,11 +9,11 @@
   <style>
     * {
       box-sizing: border-box;
+      font-family: "Google Sans", "Product Sans", Arial, Helvetica, sans-serif;
     }
 
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
       background: #f3f5f7;
       color: #222;
     }
@@ -32,11 +32,21 @@
     .header-brand {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 25px;
+      min-width: 0;
+    }
+
+    .logo-box {
+      background: white;
+      border-radius: 8px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .school-logo {
-      width: 280px;
+      width: 300px;
       max-width: 35vw;
       height: auto;
       display: block;
@@ -45,12 +55,20 @@
     header h1 {
       margin: 0;
       font-size: 24px;
+      font-weight: 700;
     }
 
     header .school-name {
       opacity: 0.8;
       font-size: 14px;
       margin-top: 4px;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font-family: "Google Sans", "Product Sans", Arial, Helvetica, sans-serif;
     }
 
     button {
@@ -80,11 +98,6 @@
       color: white;
     }
 
-    .btn-secondary {
-      background: #e0e0e0;
-      color: #222;
-    }
-
     .toolbar {
       background: white;
       border-bottom: 1px solid #ddd;
@@ -93,7 +106,6 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-
       align-items: center;
     }
 
@@ -167,8 +179,6 @@
       border: 2px solid #455a64;
       border-radius: 5px;
 
-      background: #e3f2fd;
-
       padding: 8px;
 
       cursor: pointer;
@@ -192,7 +202,7 @@
 
     .room-number {
       font-size: 18px;
-      font-weight: bold;
+      font-weight: 700;
     }
 
     .room-name {
@@ -202,7 +212,7 @@
 
     .room-class {
       margin-top: 6px;
-      font-weight: bold;
+      font-weight: 700;
       font-size: 14px;
     }
 
@@ -216,12 +226,36 @@
       background: #e3f2fd;
     }
 
+    .type-special {
+      background: #e8f5e9;
+    }
+
+    .type-language {
+      background: #e0f7fa;
+    }
+
+    .type-it {
+      background: #e8eaf6;
+    }
+
     .type-office {
       background: #fff3e0;
     }
 
-    .type-special {
-      background: #e8f5e9;
+    .type-administration {
+      background: #fff8e1;
+    }
+
+    .type-wc {
+      background: #ede7f6;
+    }
+
+    .type-storage {
+      background: #efebe9;
+    }
+
+    .type-showers {
+      background: #e1f5fe;
     }
 
     .type-other {
@@ -244,7 +278,7 @@
       display: block;
       margin-bottom: 5px;
       font-size: 13px;
-      font-weight: bold;
+      font-weight: 700;
     }
 
     input,
@@ -280,19 +314,6 @@
       flex: 1;
     }
 
-    .hint {
-      margin-top: 14px;
-
-      padding: 10px;
-
-      background: #f5f5f5;
-      border-radius: 6px;
-
-      font-size: 12px;
-      color: #666;
-      line-height: 1.4;
-    }
-
     .legend {
       margin-top: 14px;
       display: flex;
@@ -321,11 +342,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 15mm;
+      gap: 12mm;
     }
 
     .print-logo {
-      width: 60mm;
+      width: 65mm;
       height: auto;
       display: block;
     }
@@ -347,7 +368,7 @@
       }
 
       .school-logo {
-        width: 280px;
+        width: 300px;
         max-width: 100%;
       }
 
@@ -366,6 +387,10 @@
     }
 
     @media print {
+
+      * {
+        font-family: "Google Sans", "Product Sans", Arial, Helvetica, sans-serif !important;
+      }
 
       body {
         background: white;
@@ -406,7 +431,7 @@
       }
 
       .print-logo {
-        width: 60mm;
+        width: 65mm;
         height: auto;
       }
 
@@ -428,12 +453,9 @@
 
       .plan-area {
         width: 277mm;
-        height: 155mm;
-
+        height: 150mm;
         border: 1px solid #333;
-
         page-break-inside: avoid;
-
         background: white;
       }
 
@@ -456,11 +478,13 @@
 
   <div class="header-brand">
 
-    <img
-      src="logo-skola-23-transparent.png"
-      alt="Logo ZŠ Kaplického"
-      class="school-logo"
-    >
+    <div class="logo-box">
+      <img
+        id="headerLogo"
+        alt="Logo ZŠ Kaplického"
+        class="school-logo"
+      >
+    </div>
 
     <div>
       <h1>Orientační plán školy</h1>
@@ -518,7 +542,7 @@
       <div class="print-brand">
 
         <img
-          src="logo-skola-23-transparent.png"
+          id="printLogo"
           alt="Logo ZŠ Kaplického"
           class="print-logo"
         >
@@ -533,14 +557,23 @@
 
       </div>
 
-      <h2 id="printFloorTitle">1. patro</h2>
+      <h2 id="printFloorTitle">
+        1. patro
+      </h2>
 
     </div>
 
 
     <div class="plan-header">
-      <h2 id="floorTitle">1. patro</h2>
-      <span>Klikni na místnost pro úpravu</span>
+
+      <h2 id="floorTitle">
+        1. patro
+      </h2>
+
+      <span>
+        Klikni na místnost pro úpravu
+      </span>
+
     </div>
 
 
@@ -555,13 +588,43 @@
       </div>
 
       <div class="legend-item">
+        <span class="legend-color type-special"></span>
+        Odborná učebna
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-color type-language"></span>
+        Jazyková učebna
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-color type-it"></span>
+        Učebna informatiky
+      </div>
+
+      <div class="legend-item">
         <span class="legend-color type-office"></span>
         Kabinet
       </div>
 
       <div class="legend-item">
-        <span class="legend-color type-special"></span>
-        Odborná učebna
+        <span class="legend-color type-administration"></span>
+        Kancelář
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-color type-wc"></span>
+        WC
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-color type-storage"></span>
+        Sklad
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-color type-showers"></span>
+        Sprchy
       </div>
 
       <div class="legend-item">
@@ -579,25 +642,33 @@
     <h3>Údaje místnosti</h3>
 
     <div class="form-group">
-      <label>Číslo místnosti</label>
+      <label for="roomNumber">Číslo místnosti</label>
       <input id="roomNumber" placeholder="např. 203">
     </div>
 
 
     <div class="form-group">
-      <label>Název místnosti</label>
+      <label for="roomName">Název místnosti</label>
       <input id="roomName" placeholder="např. Učebna matematiky">
     </div>
 
 
     <div class="form-group">
 
-      <label>Typ místnosti</label>
+      <label for="roomType">
+        Typ místnosti
+      </label>
 
       <select id="roomType">
         <option value="classroom">Učebna</option>
         <option value="special">Odborná učebna</option>
+        <option value="language">Jazyková učebna</option>
+        <option value="it">Učebna informatiky</option>
         <option value="office">Kabinet</option>
+        <option value="administration">Kancelář</option>
+        <option value="wc">WC</option>
+        <option value="storage">Sklad</option>
+        <option value="showers">Sprchy</option>
         <option value="other">Ostatní</option>
       </select>
 
@@ -605,20 +676,19 @@
 
 
     <div class="form-group">
-      <label>Třída</label>
+      <label for="roomClass">Třída</label>
       <input id="roomClass" placeholder="např. 7.A">
     </div>
 
 
     <div class="form-group">
-      <label>Třídní učitel</label>
+      <label for="roomTeacher">Třídní učitel</label>
       <input id="roomTeacher" placeholder="např. Jan Novák">
     </div>
 
 
     <div class="form-group">
-      <label>Poznámka</label>
-
+      <label for="roomNote">Poznámka</label>
       <textarea
         id="roomNote"
         placeholder="Další informace..."
@@ -629,12 +699,12 @@
     <div class="row">
 
       <div class="form-group">
-        <label>X</label>
+        <label for="roomX">X</label>
         <input id="roomX" type="number" value="50">
       </div>
 
       <div class="form-group">
-        <label>Y</label>
+        <label for="roomY">Y</label>
         <input id="roomY" type="number" value="50">
       </div>
 
@@ -644,12 +714,12 @@
     <div class="row">
 
       <div class="form-group">
-        <label>Šířka</label>
+        <label for="roomWidth">Šířka</label>
         <input id="roomWidth" type="number" value="140">
       </div>
 
       <div class="form-group">
-        <label>Výška</label>
+        <label for="roomHeight">Výška</label>
         <input id="roomHeight" type="number" value="90">
       </div>
 
@@ -674,19 +744,25 @@
 
     </div>
 
-
-    <div class="hint">
-      Místnosti se zatím umisťují pomocí souřadnic X a Y.
-      Později můžeme přidat přesouvání myší, změnu velikosti tažením,
-      chodby, schody, dveře a další prvky.
-    </div>
-
   </div>
 
 </div>
 
 
 <script>
+
+  /*
+   * Logo je vložené přímo do HTML.
+   * Není potřeba žádný externí PNG soubor.
+   *
+   * Sem vložím Base64 data obrázku.
+   */
+
+  const SCHOOL_LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAACAAAAAIACAYAAAAW14x+...";
+
+  document.getElementById("headerLogo").src = SCHOOL_LOGO;
+  document.getElementById("printLogo").src = SCHOOL_LOGO;
+
 
   let currentFloor = 1;
   let selectedRoomId = null;
@@ -765,7 +841,6 @@
     document.getElementById("printFloorTitle").textContent =
       floor + ". patro";
 
-
     document
       .querySelectorAll(".floor-btn")
       .forEach(button => {
@@ -776,7 +851,6 @@
         );
 
       });
-
 
     clearForm();
     renderRooms();
@@ -793,7 +867,9 @@
 
 
     rooms
-      .filter(room => room.floor === currentFloor)
+      .filter(room =>
+        room.floor === currentFloor
+      )
       .forEach(room => {
 
         const div =
@@ -834,9 +910,11 @@
           ${
             room.className
             ?
-            `<div class="room-class">
-              ${escapeHTML(room.className)}
-            </div>`
+            `
+              <div class="room-class">
+                ${escapeHTML(room.className)}
+              </div>
+            `
             :
             ""
           }
@@ -844,9 +922,11 @@
           ${
             room.teacher
             ?
-            `<div class="room-teacher">
-              ${escapeHTML(room.teacher)}
-            </div>`
+            `
+              <div class="room-teacher">
+                ${escapeHTML(room.teacher)}
+              </div>
+            `
             :
             ""
           }
@@ -868,7 +948,10 @@
   function selectRoom(id) {
 
     const room =
-      rooms.find(r => r.id === id);
+      rooms.find(
+        r => r.id === id
+      );
+
 
     if (!room) {
       return;
@@ -947,7 +1030,6 @@
     const note =
       document.getElementById("roomNote").value.trim();
 
-
     const x =
       Number(document.getElementById("roomX").value);
 
@@ -973,7 +1055,9 @@
     if (selectedRoomId !== null) {
 
       const room =
-        rooms.find(r => r.id === selectedRoomId);
+        rooms.find(
+          r => r.id === selectedRoomId
+        );
 
 
       room.number = number;
@@ -1015,7 +1099,8 @@
 
       rooms.push(newRoom);
 
-      selectedRoomId = newRoom.id;
+      selectedRoomId =
+        newRoom.id;
 
     }
 
@@ -1037,14 +1122,19 @@
     }
 
 
-    if (!confirm("Opravdu chceš místnost smazat?")) {
+    if (
+      !confirm(
+        "Opravdu chceš místnost smazat?"
+      )
+    ) {
       return;
     }
 
 
     rooms =
       rooms.filter(
-        room => room.id !== selectedRoomId
+        room =>
+          room.id !== selectedRoomId
       );
 
 
